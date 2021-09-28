@@ -41,11 +41,11 @@
 """
 # Programa desenvolvido por Paulo Eduardo Caram Guedes
 # Data: 27/09/2021
-# Data Modificação: 27/09/2021
+# Data Modificação: 28/09/2021
 # Release 1.0.0
 from os import system, name #Importando o módulo OS (do sistema)
 from time import sleep # importando apenas o módulo sleep 
-from datetime import date # Importando apenas o módulo date
+from datetime import datetime # Importando apenas o módulo datetime (Trás data/hora)
 
 # Declaracao de variaveis globais devido não o sistema não contemplar armazenamento em meios fisicos.
 
@@ -63,28 +63,30 @@ def registrarVacina():
     estoque_coronavac = estoque.get('CoronaVac')
     estoque_astrazeneca = estoque.get('Astrazeneca')
 
-    hoje = date.today()
-    data_br = hoje.strftime('%d/%m/%y')
+    hoje = datetime.now()
+    data_br = hoje.strftime('%d/%m/%Y')
+    hora = hoje.strftime('%H:%M')
 
 
     while True:
-        lista = [] # Uso essa lista para inserir na lista_geral, assim obtenho uma matriz n=linhas e 4 col
+        lista = [] # Uso essa lista para inserir na lista_geral, assim obtenho uma matriz
+                   # n=linhas e 4 col
         limpa()
-        
         print('='*32)
+        print(f'\nData: {data_br} - Hora: {hora}')
+        print('='*32)
+        
         nome = input('Digite seu nome ou (0 - Sai): ')
         
         if nome == '0':
             break
         
-        print(f'Data: {data_br}\n')
-
         qual_vacina = int(input(f'1. Pfizer \n' \
                             f'2. Coronavac \n' \
                             f'3. Astrazeneca \n'\
                             f'Opcao: '))
         
-        lista.append(nome)
+        lista.append(nome.upper())
         
         if qual_vacina == 1 and estoque_pfizer >0:
             
@@ -99,24 +101,24 @@ def registrarVacina():
             lista.append('Astrazeneca')
             estoque_astrazeneca -= 1
         else:
-            print('\nOpcao invalida ou Vacina em falta')
+            print('\nOpcao invalida ou ESTOQUE ZERADO !!')
+            sleep(2)
             continue
-            
-        
-        hora = input('Hora: ')
         
 
         lista.append(data_br)
         lista.append(hora)
         lista_geral.append(lista)
+        print('\nRegistro de Vacina efetuado !!')
+        sleep(1)
         
-        
-
-    print(lista_geral)
+    # Atualiza o Estoque
     estoque['Pfizer'] = estoque_pfizer
     estoque['CoronaVac'] = estoque_coronavac
     estoque['Astrazeneca'] = estoque_astrazeneca
-
+"""
+    Fim da funcao registrarVacina
+"""
 # Funcao que insere as vacinas no estoque
 def adicionarEstoque():
     while True:
@@ -136,9 +138,7 @@ def adicionarEstoque():
                 continue
                 
             qtd =   int(input('Digite a qtd: '))
-            
-        
-            
+
             
         except ValueError:
             print('\nSomente números inteiros !!')
@@ -158,7 +158,9 @@ def adicionarEstoque():
                 
             print('\nIncluido no estoque !!')
             sleep(1)
-
+"""
+    Fim da Funcao adicionarEstoque
+"""
     
 def obterTotalVacinados():
     opcao = 10 # Flag de entrada no loop
@@ -197,18 +199,79 @@ def obterTotalVacinados():
         except ValueError:
             print('\nVálido apenas o (0) para sair!!')
             sleep(1)
-            
-        
-
-
-        
-
-          
-    
+"""
+    Fim da função obterTotalVacinados
+"""            
 
 def obterMediaVacinacao():
-    pass
+    
+    if len(lista_geral) == 0:
+        limpa()
+        print('Para obter a média é necessário entrada das vacinações')
+        sleep(2)
+        return 
+    
+    soma_diaria = 0 # Soma a quantidade por dia
+    soma_pfizer = 0 # Soma diaria e por vacina
+    soma_coronavac = 0 # idem
+    soma_astrazeneca = 0 # idem
 
+    while True:
+        limpa()
+        data_br = input('Digite a data (dd/mm/aaaa): ')
+        
+
+        if len(data_br) == 10:
+            
+            if int(data_br[:2]) < 1 or int(data_br[:2]) >31:
+                print('Dia invalido (1 - 31) !!!')
+                sleep(1)
+                continue
+            elif int(data_br[3:5]) <1 or int(data_br[3:5]) >12:
+                print('Mês invalido (1 - 12) !!!')
+                sleep(1)
+                continue
+            else:
+                break
+            
+        else:
+            print('Formato de data inválido !!!')
+            sleep(1)
+
+    for linha in range(0,len(lista_geral)):
+        
+        for col in range(0,4):
+        
+            
+            if lista_geral[linha][col] == data_br:
+                print(lista_geral[linha], end= "\t")
+                soma_diaria += 1
+                
+                if lista_geral[linha][col-1] == 'Pfizer':
+                    soma_pfizer += 1
+                elif lista_geral[linha][col-1] == 'CoronaVac':
+                    soma_coronavac += 1
+                elif lista_geral[linha][col-1] == 'Astrazeneca':
+                    soma_astrazeneca += 1
+        
+        print('\n')
+
+    print('\n')
+    print('='*32)
+    print(f'Total de vacinas aplicadas no dia: ({soma_diaria})')
+    print(f'Total de vacinas Pfizer aplicadas no dia.....: {data_br} -> ({soma_pfizer})')
+    print(f'Total de vacinas Coronavac aplicadas no dia..: {data_br} -> ({soma_coronavac})')
+    print(f'Total de vacinas Astrazeneca aplicadas no dia: {data_br} -> ({soma_astrazeneca})')
+    print('='*32)
+    print(f'Media diária: {((soma_diaria / len(lista_geral))*100):.2f}%')
+    print(f'Media diária Vacina Pfizer.....: {((soma_pfizer / len(lista_geral))*100):.2f}%')
+    print(f'Media diária Vacina CoronaVac..: {((soma_coronavac / len(lista_geral))*100):.2f}%')
+    print(f'Media diária Vacina Astrazeneca: {((soma_astrazeneca / len(lista_geral))*100):.2f}%') 
+    sleep(5)
+    
+"""
+    Fim da Função obterMediaVacinacao
+"""    
 def obterQtdDoses():
     
     while True:
@@ -241,7 +304,9 @@ def obterQtdDoses():
                 print('\n Opção Inválida !!')
 
             sleep(2)
-
+"""
+    Fim da Função obterQtdDoses
+"""
 
 dicio = {
     1:registrarVacina,
