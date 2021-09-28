@@ -43,13 +43,81 @@
 # Data: 27/09/2021
 # Data Modificação: 27/09/2021
 # Release 1.0.0
-from os import system, name
-from time import sleep
-estoque = {}.fromkeys(['Pfizer','CoronaVac','Astrazeneca'],0)
+from os import system, name #Importando o módulo OS (do sistema)
+from time import sleep # importando apenas o módulo sleep 
+from datetime import date # Importando apenas o módulo date
+
+# Declaracao de variaveis globais devido não o sistema não contemplar armazenamento em meios fisicos.
+
+estoque = {}.fromkeys(['Pfizer','CoronaVac','Astrazeneca'],0) # Dicionario que armazena o Estoque
+lista_geral = []  # Lista que armazena os nomes, a vacina, dia e hora
+
+# Funçao que registra as vacinas
 
 def registrarVacina():
-    pass
 
+    # Aqui estou pegando o estoque atual
+    # No incio do programa, antes de entrar com estoque o mesmo fica zerado
+
+    estoque_pfizer = estoque.get('Pfizer')
+    estoque_coronavac = estoque.get('CoronaVac')
+    estoque_astrazeneca = estoque.get('Astrazeneca')
+
+    hoje = date.today()
+    data_br = hoje.strftime('%d/%m/%y')
+
+
+    while True:
+        lista = [] # Uso essa lista para inserir na lista_geral, assim obtenho uma matriz n=linhas e 4 col
+        limpa()
+        
+        print('='*32)
+        nome = input('Digite seu nome ou (0 - Sai): ')
+        
+        if nome == '0':
+            break
+        
+        print(f'Data: {data_br}\n')
+
+        qual_vacina = int(input(f'1. Pfizer \n' \
+                            f'2. Coronavac \n' \
+                            f'3. Astrazeneca \n'\
+                            f'Opcao: '))
+        
+        lista.append(nome)
+        
+        if qual_vacina == 1 and estoque_pfizer >0:
+            
+            lista.append('Pfizer')
+            estoque_pfizer -= 1
+            
+        elif qual_vacina == 2 and estoque_coronavac >0:
+            lista.append('CoronaVac')
+            estoque_coronavac -= 1
+            
+        elif qual_vacina == 3 and estoque_astrazeneca >0:
+            lista.append('Astrazeneca')
+            estoque_astrazeneca -= 1
+        else:
+            print('\nOpcao invalida ou Vacina em falta')
+            continue
+            
+        
+        hora = input('Hora: ')
+        
+
+        lista.append(data_br)
+        lista.append(hora)
+        lista_geral.append(lista)
+        
+        
+
+    print(lista_geral)
+    estoque['Pfizer'] = estoque_pfizer
+    estoque['CoronaVac'] = estoque_coronavac
+    estoque['Astrazeneca'] = estoque_astrazeneca
+
+# Funcao que insere as vacinas no estoque
 def adicionarEstoque():
     while True:
         limpa()
@@ -88,18 +156,92 @@ def adicionarEstoque():
                 print('\nOpção inválida !!')
                 sleep(1)
                 
-            print(estoque)
+            print('\nIncluido no estoque !!')
             sleep(1)
 
     
 def obterTotalVacinados():
-    pass
+    opcao = 10 # Flag de entrada no loop
+    
+    while opcao != 0:
+        limpa()
+
+        if len(lista_geral) == 0:
+            print(f'\nNão temos nenhum vacinado ainda !!')
+            sleep(1)
+            opcao = 0
+            
+        else:
+            print(f'Total de vacinados: {len(lista_geral)}')
+
+            soma_pfizer = 0
+            soma_coronavac = 0
+            soma_astrazeneca = 0
+
+            for linha in range(0,len(lista_geral)):
+                
+                for col in range(0,4):
+                    if lista_geral[linha][col] == 'Pfizer':
+                        soma_pfizer += 1
+                    elif lista_geral[linha][col] == 'CoronaVac':
+                        soma_coronavac += 1
+                    elif lista_geral[linha][col] == 'Astrazeneca':
+                        soma_astrazeneca += 1
+                        
+            print(f'Total de vacinados com PFIZER.....: {soma_pfizer}\n' \
+                f'Total de vacinados com CORONAVAC..: {soma_coronavac} \n' \
+                f'Total de vacinados com ASTRAZENECA: {soma_astrazeneca}')
+        try:
+            opcao = int(input('Digite (0 - Sair): '))
+
+        except ValueError:
+            print('\nVálido apenas o (0) para sair!!')
+            sleep(1)
+            
+        
+
+
+        
+
+          
+    
 
 def obterMediaVacinacao():
     pass
 
 def obterQtdDoses():
-    pass
+    
+    while True:
+        limpa()
+        try:
+            print('='*32)
+            op = int(input(f'1. Pfizer\n' \
+                           f'2. CoronaVac\n' \
+                           f'3. Astrazeneca\n' \
+                           f'4. Todas\n' \
+                           f'5. Sai:\n' \
+                           f'Escolha a sua opção: '))
+
+        except ValueError:
+            print('\n Digite apenas números !!')
+            sleep(1)
+        else:
+
+            if op == 5:
+                break
+            elif op == 1:
+                print(f'Estoque da Vacina PFIZER: {estoque.get("Pfizer")}')
+            elif op == 2:
+                print(f'Estoque da Vacina CORONAVAC: {estoque.get("CoronaVac")}')
+            elif op == 3:
+                print(f'Estoque da Vacina ASTRAZENECA: {estoque.get("Astrazeneca")}')
+            elif op == 4:
+                print(estoque)
+            else:
+                print('\n Opção Inválida !!')
+
+            sleep(2)
+
 
 dicio = {
     1:registrarVacina,
@@ -130,7 +272,6 @@ def menu():
                 f'6. Sair\n'
                 )   
             print('='*32)
-            print(estoque)
        
             op = int(input('Entra com opção: '))
         
