@@ -1,0 +1,20 @@
+/*
+Sintaxe do CSS
+
+começa pelo seguinte processo
+
+seletor {propriedade: valor;}
+*/
+
+body {background-color:cornflowerblue;}
+
+h1 {
+    color:floralwhite;
+    background-color: lightpink;
+    text-align: center;
+}
+
+p {
+    align-content: center;
+    text-transform: uppercase;
+}
