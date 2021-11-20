@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora IMC</title>
+</head>
+<body>
+
+  <h1>Calculadora IMC</h1>
+  <hr>
+
+  <label for="">Digite o peso (kg):</label>
+  <input type="number" placeholder="0" id="peso">
+
+  <br><br>
+
+  <label for="">Digite o altura (m):</label>
+  <input type="number" placeholder="0" id="altura">
+
+  <button onclick="calcular()">Calcular</button>
+
+  <hr>
+
+  <label for="">IMC:</label>
+  <input type="number" disabled id="imc">
+
+  <label for="">Classificação:</label>
+  <input type="text" disabled id="classificacao">
+
+  <script src="calculadora-imc.js"></script>
+
+</body>
+</html>
